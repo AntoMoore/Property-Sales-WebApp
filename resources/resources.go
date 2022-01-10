@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
+
 )
 
 type Client struct {
@@ -25,8 +25,9 @@ func NewClient(httpClient *http.Client) *Client {
 
 // get agents from API 
 func (c *Client) GetAgents(query string) (*AgentResults, error) {
-	var endpoint = ""
+	var endpoint = "http://localhost:4567/openproperty/agents/"
 
+	/*
 	if query == "" {
 		// no paramaters (get all agents)
 		endpoint = "http://localhost:4567/openproperty/agents/"
@@ -34,6 +35,7 @@ func (c *Client) GetAgents(query string) (*AgentResults, error) {
 		// get Agent by given id
 		endpoint = fmt.Sprintf("http://localhost:4567/openproperty/agents/?id=%s", url.QueryEscape(query))
 	}
+	*/
 
 	// response errors
 	resp, err := c.http.Get(endpoint)

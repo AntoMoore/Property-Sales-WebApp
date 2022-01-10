@@ -1,42 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Property-Sales</title>
-  <link rel="stylesheet" href="assets/style.css">
-</head>
-<body>
-  <main>
-    <header>
-      <a class="logo" href="/">Property-Sales</a>
-      <form action="/search" method="GET">
-        <input
-          autofocus
-          class="search-input"
-          value="{{ .Query }}"
-          placeholder="Enter Agent-ID"
-          type="search"
-          name="q"
-        />
-      </form>
-      <a class="button">Button</a>
-    </header>
-    <section class="container">
-      <ul class="search-results">
-        {{ range.AgentResults }}
-        <li class="resources-Agent">
-          <div>
-            <p class="agentId">Agent-ID: {{ .AgentID }}</p>
-            <p class="agentName">Agent-Name: {{ .AgentName }}</p>
-            <p class="agentCommission">Agent-Commission: {{ .AgentCommission }}</p>
-            <br>
-          </div>
-        </li>
-        {{ end }}
-      </ul>
-    </section>
-  </main>
-</body>
-</html>
+{{define "agents"}}
+{{template "header" .}}
+<div class="content">
+    <h2>Agents</h2>
+    <div>This is the Agents page</div>
+    <ul class="search-results">
+      {{ range.AgentResults }}
+      <li class="resources-Agent">
+        <div>
+          <p class="agentId">Agent-ID: {{ .AgentID }}</p>
+          <p class="agentName">Agent-Name: {{ .AgentName }}</p>
+          <p class="agentCommission">Agent-Commission: {{ .AgentCommission }}</p>
+          <br>
+        </div>
+      </li>
+      {{ end }}
+    </ul>
+</div>
+{{template "footer" .}}
+{{end}}
+<!-- 
+<ul class="search-results">
+  {{ range.AgentResults }}
+  <li class="resources-Agent">
+    <div>
+      <p class="agentId">Agent-ID: {{ .AgentID }}</p>
+      <p class="agentName">Agent-Name: {{ .AgentName }}</p>
+      <p class="agentCommission">Agent-Commission: {{ .AgentCommission }}</p>
+      <br>
+    </div>
+  </li>
+  {{ end }}
+</ul>
+-->
