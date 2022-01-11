@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"log"
 
 )
 
@@ -58,4 +60,27 @@ func (c *Client) GetAgents(query string) (*AgentResults, error) {
 	// parse json and return
 	res := &AgentResults{}
 	return res, json.Unmarshal(body, res)
+}
+
+
+func (c *Client) PostAgent(details url.Values) (error) {
+	var endpoint = "http://localhost:4567/openproperty/agents"
+	
+	// response error
+	resp, err := c.http.PostForm(endpoint, details)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// close body and check for errors
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// print results
+	fmt.Printf("%+v", body)
+
+	return nil
 }

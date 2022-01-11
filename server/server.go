@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"net/url"
 	"time"
 
 	"example.com/resources"
@@ -12,7 +13,7 @@ import (
 // reference to index.html
 var tmpls = template.Must(template.ParseFiles("../templates/header.html", 
 	"../templates/footer.html", "../templates/header.html", "../templates/main.html", 
-	"../templates/about.html", "../templates/agents.html"))
+	"../templates/about.html", "../templates/agents.html", "../templates/postAgent.html"))
 
 type Page struct {
 	Title string
@@ -32,7 +33,7 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 	display(w, "about", &Page{Title: "About"})
 }
 
-func agentsHandler(w http.ResponseWriter, r *http.Request) {
+func getAgentsHandler(w http.ResponseWriter, r *http.Request) {
 	// connection to API
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 	resourceApi := resources.NewClient(httpClient)
@@ -50,6 +51,36 @@ func agentsHandler(w http.ResponseWriter, r *http.Request) {
 
 	//tmpls.ExecuteTemplate(w, "agents", agentSearch)
 	display(w, "agents", &Page{Title: "Agent", AgentResults: results})
+}
+
+func postAgentHandler(w http.ResponseWriter, r *http.Request){
+	// connection to API
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+	resourceApi := resources.NewClient(httpClient)
+
+	// check for post method
+	if r.Method != http.MethodPost {
+		// tmpls.Execute(w, nil)
+		display(w, "postAgent", nil)
+		return
+	}
+
+	// map key-value pairs from the form data
+	data := url.Values{}
+	data.Set("name", r.FormValue("agentName"))
+	data.Set("commission", r.FormValue("agentCommission"))
+
+	// call resources
+	err := resourceApi.PostAgent(data)
+
+	// error handling
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// display agents
+	getAgentsHandler(w,r)
 }
 
 // NB - handle search paramaters
@@ -78,7 +109,8 @@ func main() {
 	// URL routing
 	mux.HandleFunc("/", mainHandler)
 	mux.HandleFunc("/about", aboutHandler)
-	mux.HandleFunc("/agents", agentsHandler)
+	mux.HandleFunc("/agents", getAgentsHandler)
+	mux.HandleFunc(("/postAgent"), postAgentHandler)
 
 	//Listen on port 3000
 	http.ListenAndServe(":"+port, mux)

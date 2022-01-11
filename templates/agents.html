@@ -1,8 +1,9 @@
 {{define "agents"}}
 {{template "header" .}}
 <div class="content">
-    <h2>Agents</h2>
-    <div>This is the Agents page</div>
+  <h2>Agents</h2>
+  <div>This is the Agents page</div>
+  <div>
     <ul class="search-results">
       {{ range.AgentResults }}
       <li class="resources-Agent">
@@ -15,20 +16,7 @@
       </li>
       {{ end }}
     </ul>
+  </div>
 </div>
 {{template "footer" .}}
 {{end}}
-<!-- 
-<ul class="search-results">
-  {{ range.AgentResults }}
-  <li class="resources-Agent">
-    <div>
-      <p class="agentId">Agent-ID: {{ .AgentID }}</p>
-      <p class="agentName">Agent-Name: {{ .AgentName }}</p>
-      <p class="agentCommission">Agent-Commission: {{ .AgentCommission }}</p>
-      <br>
-    </div>
-  </li>
-  {{ end }}
-</ul>
--->
