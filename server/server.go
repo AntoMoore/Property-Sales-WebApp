@@ -135,6 +135,7 @@ func postPropertyHandler(w http.ResponseWriter, r *http.Request){
 }
 
 // NB - handle search paramaters
+// Needed to implement search functionality
 /*
 	// check URL for errors		
 	u, err := url.Parse(r.URL.String())
