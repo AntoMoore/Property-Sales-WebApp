@@ -1,0 +1,26 @@
+{{define "properties"}}
+{{template "header" .}}
+<div class="content">
+  <h2>Properties</h2>
+  <div>This is the Properties page</div>
+  <div>
+    <ul class="search-results">
+      {{ range.PropertyResults }}
+      <li class="resources-Property">
+        <div>
+          <p class="propertyId">Property-ID: {{ .PropertyID }}</p>
+          <p class="propertyType">Property-Type: {{ .PropertyType }}</p>
+          <p class="propertyAddress">Property-Address: {{ .PropertyAddress }}</p>
+          <p class="propertyValue">Property-Value: {{ .PropertyValue }}</p>
+          <p class="agentId">Agent-Id: {{ .PropertyAgent.AgentID }}</p>
+          <p class="agentName">Agent-Name: {{ .PropertyAgent.AgentName }}</p>
+          <p class="agentCommission">Agent-Commission: {{ .PropertyAgent.AgentCommission }}</p>
+          <br>
+        </div>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

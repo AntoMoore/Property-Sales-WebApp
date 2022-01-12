@@ -12,12 +12,14 @@ import (
 
 // reference to index.html
 var tmpls = template.Must(template.ParseFiles("../templates/header.html", 
-	"../templates/footer.html", "../templates/header.html", "../templates/main.html", 
-	"../templates/about.html", "../templates/agents.html", "../templates/postAgent.html"))
+	"../templates/footer.html", "../templates/main.html", 
+	"../templates/agents.html", "../templates/createAgent.html", 
+	"../templates/properties.html"))
 
 type Page struct {
 	Title string
 	AgentResults    *resources.AgentResults
+	PropertyResults *resources.PropertyResults
 }
 
 // template-handler helper function
@@ -27,10 +29,6 @@ func display(w http.ResponseWriter, tmpl string, data interface{}) {
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
 	display(w, "main", &Page{Title: "Home"})
-}
-
-func aboutHandler(w http.ResponseWriter, r *http.Request) {
-	display(w, "about", &Page{Title: "About"})
 }
 
 func getAgentsHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +48,7 @@ func getAgentsHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("%+v", results)
 
 	//tmpls.ExecuteTemplate(w, "agents", agentSearch)
-	display(w, "agents", &Page{Title: "Agent", AgentResults: results})
+	display(w, "agents", &Page{Title: "Agents", AgentResults: results})
 }
 
 func postAgentHandler(w http.ResponseWriter, r *http.Request){
@@ -61,7 +59,7 @@ func postAgentHandler(w http.ResponseWriter, r *http.Request){
 	// check for post method
 	if r.Method != http.MethodPost {
 		// tmpls.Execute(w, nil)
-		display(w, "postAgent", nil)
+		display(w, "createAgent", nil)
 		return
 	}
 
@@ -81,6 +79,26 @@ func postAgentHandler(w http.ResponseWriter, r *http.Request){
 
 	// display agents
 	getAgentsHandler(w,r)
+}
+
+func getPropertiesHandler(w http.ResponseWriter, r *http.Request) {
+	// connection to API
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+	resourceApi := resources.NewClient(httpClient)
+	searchQuery := ""
+
+	// check results for errors
+	results, err := resourceApi.GetProperties(searchQuery)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// print results
+	fmt.Printf("%+v", results)
+
+	//tmpls.ExecuteTemplate(w, "agents", agentSearch)
+	display(w, "properties", &Page{Title: "Properties", PropertyResults: results})
 }
 
 // NB - handle search paramaters
@@ -108,9 +126,9 @@ func main() {
 
 	// URL routing
 	mux.HandleFunc("/", mainHandler)
-	mux.HandleFunc("/about", aboutHandler)
 	mux.HandleFunc("/agents", getAgentsHandler)
-	mux.HandleFunc(("/postAgent"), postAgentHandler)
+	mux.HandleFunc(("/createAgent"), postAgentHandler)
+	mux.HandleFunc(("/properties"), getPropertiesHandler)
 
 	//Listen on port 3000
 	http.ListenAndServe(":"+port, mux)
