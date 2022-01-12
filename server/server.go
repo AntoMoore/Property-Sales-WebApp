@@ -14,7 +14,7 @@ import (
 var tmpls = template.Must(template.ParseFiles("../templates/header.html", 
 	"../templates/footer.html", "../templates/main.html", 
 	"../templates/agents.html", "../templates/createAgent.html", 
-	"../templates/properties.html"))
+	"../templates/properties.html", "../templates/createProperty.html"))
 
 type Page struct {
 	Title string
@@ -101,6 +101,39 @@ func getPropertiesHandler(w http.ResponseWriter, r *http.Request) {
 	display(w, "properties", &Page{Title: "Properties", PropertyResults: results})
 }
 
+func postPropertyHandler(w http.ResponseWriter, r *http.Request){
+	// connection to API
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+	resourceApi := resources.NewClient(httpClient)
+
+	// check for post method
+	if r.Method != http.MethodPost {
+		// tmpls.Execute(w, nil)
+		display(w, "createProperty", nil)
+		return
+	}
+
+	// map key-value pairs from the form data
+	data := url.Values{}
+	data.Set("type", r.FormValue("propertyType"))
+	data.Set("address", r.FormValue("propertyAddress"))
+	data.Set("value", r.FormValue("propertyValue"))
+	data.Set("agentId", r.FormValue("propertyAgentID"))
+
+
+	// call resources
+	err := resourceApi.PostProperty(data)
+
+	// error handling
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// display properties
+	getPropertiesHandler(w,r)
+}
+
 // NB - handle search paramaters
 /*
 	// check URL for errors		
@@ -129,6 +162,7 @@ func main() {
 	mux.HandleFunc("/agents", getAgentsHandler)
 	mux.HandleFunc(("/createAgent"), postAgentHandler)
 	mux.HandleFunc(("/properties"), getPropertiesHandler)
+	mux.HandleFunc(("/createProperty"), postPropertyHandler)
 
 	//Listen on port 3000
 	http.ListenAndServe(":"+port, mux)

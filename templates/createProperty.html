@@ -1,0 +1,28 @@
+{{define "createProperty"}}
+{{template "header" .}}
+<div class="content">
+    <div>
+        {{if .Success}}
+          <h3>Property Created Successfully</h3>
+        {{else}}
+          <form method="POST">
+            <label>Property-Type:</label>
+            <input type="text" name="propertyType">
+            <br>
+            <label>Property-Address:</label>
+            <input type="text" name="propertyAddress">
+            <br>
+            <label>Property-Value:</label>
+            <input type="text" name="propertyValue">
+            <br>
+            <label>Property-AgentID:</label>
+            <input type="text" name="propertyAgentID">
+            <br>
+            <input type="submit">
+          </form>
+      </div>
+      {{ end }}
+    </div>
+</div>
+{{template "footer" .}}
+{{end}}
