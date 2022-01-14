@@ -1,0 +1,19 @@
+{{define "createSale"}}
+{{template "header" .}}
+<div class="content">
+    <div>
+        {{if .Success}}
+          <h3>Sale Created Successfully</h3>
+        {{else}}
+          <form method="POST">
+            <label>Sale-PropertyID:</label>
+            <input type="text" name="propertyID">
+            <br>
+            <input type="submit">
+          </form>
+      </div>
+      {{ end }}
+    </div>
+</div>
+{{template "footer" .}}
+{{end}}

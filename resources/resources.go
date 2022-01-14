@@ -206,3 +206,25 @@ func (c *Client) GetSales(query string) (*SaleResults, error) {
 	res := &SaleResults{}
 	return res, json.Unmarshal(body, res)
 }
+
+func (c *Client) PostSale(details url.Values) (error) {
+	var endpoint = "http://localhost:4567/openproperty/sales"
+	
+	// response error
+	resp, err := c.http.PostForm(endpoint, details)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// close body and check for errors
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// print results
+	fmt.Printf("%+v", body)
+
+	return nil
+}

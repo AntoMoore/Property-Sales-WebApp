@@ -15,7 +15,7 @@ var tmpls = template.Must(template.ParseFiles("../templates/header.html",
 	"../templates/footer.html", "../templates/main.html", 
 	"../templates/agents.html", "../templates/createAgent.html", 
 	"../templates/properties.html", "../templates/createProperty.html", 
-	"../templates/sales.html"))
+	"../templates/sales.html", "../templates/createSale.html"))
 
 type Page struct {
 	Title string
@@ -156,6 +156,35 @@ func getSalesHandler(w http.ResponseWriter, r *http.Request) {
 	display(w, "sales", &Page{Title: "Sales", SaleResults: results})
 }
 
+func postSaleHandler(w http.ResponseWriter, r *http.Request){
+	// connection to API
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+	resourceApi := resources.NewClient(httpClient)
+
+	// check for post method
+	if r.Method != http.MethodPost {
+		// tmpls.Execute(w, nil)
+		display(w, "createSale", nil)
+		return
+	}
+
+	// map key-value pairs from the form data
+	data := url.Values{}
+	data.Set("propertyId", r.FormValue("propertyID"))
+
+	// call resources
+	err := resourceApi.PostSale(data)
+
+	// error handling
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// display sales
+	getSalesHandler(w,r)
+}
+
 // NB - handle search paramaters
 // Needed to implement search functionality
 /*
@@ -187,6 +216,7 @@ func main() {
 	mux.HandleFunc(("/properties"), getPropertiesHandler)
 	mux.HandleFunc(("/createProperty"), postPropertyHandler)
 	mux.HandleFunc(("/sales"), getSalesHandler)
+	mux.HandleFunc(("/createSale"), postSaleHandler)
 
 	//Listen on port 3000
 	http.ListenAndServe(":"+port, mux)
