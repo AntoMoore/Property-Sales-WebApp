@@ -1,0 +1,28 @@
+{{define "sales"}}
+{{template "header" .}}
+<div class="content">
+  <h2>Sales</h2>
+  <div>This is the Sales page</div>
+  <div>
+    <ul class="search-results">
+      {{ range.SaleResults }}
+      <li class="resources-Sale">
+        <div>
+          <p class="saleId">Sale-ID: {{ .SaleID }}</p>
+          <p class="saleDate">Sale-Date: {{ .SaleDate }}</p>
+          <p class="propertyId">Property-ID: {{ .SaleProperty.PropertyID }}</p>
+          <p class="propertyType">Property-Type: {{ .SaleProperty.PropertyType }}</p>
+          <p class="propertyAddress">Property-Address: {{ .SaleProperty.PropertyAddress }}</p>
+          <p class="propertyValue">Property-Value: {{ .SaleProperty.PropertyValue }}</p>
+          <p class="agentId">Agent-Id: {{ .SaleProperty.PropertyAgent.AgentID }}</p>
+          <p class="agentName">Agent-Name: {{ .SaleProperty.PropertyAgent.AgentName }}</p>
+          <p class="agentCommission">Agent-Commission: {{ .SaleProperty.PropertyAgent.AgentCommission }}</p>
+          <br>
+        </div>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

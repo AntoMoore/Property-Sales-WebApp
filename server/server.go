@@ -14,12 +14,14 @@ import (
 var tmpls = template.Must(template.ParseFiles("../templates/header.html", 
 	"../templates/footer.html", "../templates/main.html", 
 	"../templates/agents.html", "../templates/createAgent.html", 
-	"../templates/properties.html", "../templates/createProperty.html"))
+	"../templates/properties.html", "../templates/createProperty.html", 
+	"../templates/sales.html"))
 
 type Page struct {
 	Title string
 	AgentResults    *resources.AgentResults
 	PropertyResults *resources.PropertyResults
+	SaleResults 	*resources.SaleResults
 }
 
 // template-handler helper function
@@ -134,6 +136,26 @@ func postPropertyHandler(w http.ResponseWriter, r *http.Request){
 	getPropertiesHandler(w,r)
 }
 
+func getSalesHandler(w http.ResponseWriter, r *http.Request) {
+	// connection to API
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+	resourceApi := resources.NewClient(httpClient)
+	searchQuery := ""
+
+	// check results for errors
+	results, err := resourceApi.GetSales(searchQuery)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// print results
+	fmt.Printf("%+v", results)
+
+	//tmpls.ExecuteTemplate(w, "agents", agentSearch)
+	display(w, "sales", &Page{Title: "Sales", SaleResults: results})
+}
+
 // NB - handle search paramaters
 // Needed to implement search functionality
 /*
@@ -164,6 +186,7 @@ func main() {
 	mux.HandleFunc(("/createAgent"), postAgentHandler)
 	mux.HandleFunc(("/properties"), getPropertiesHandler)
 	mux.HandleFunc(("/createProperty"), postPropertyHandler)
+	mux.HandleFunc(("/sales"), getSalesHandler)
 
 	//Listen on port 3000
 	http.ListenAndServe(":"+port, mux)
