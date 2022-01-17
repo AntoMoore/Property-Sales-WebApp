@@ -4,6 +4,18 @@
   <h2>Agents</h2>
   <div>This is the Agents page</div>
   <div>
+    <form action="/agents" method="GET">
+      <input
+        autofocus
+        class="search-input"
+        value=""
+        placeholder="Search by Agent-ID"
+        type="search"
+        name="q"
+      />
+    </form>
+  </div>
+  <div>
     <ul class="search-results">
       {{ range.AgentResults }}
       <li class="resources-Agent">
