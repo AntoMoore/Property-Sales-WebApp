@@ -97,7 +97,17 @@ func getPropertiesHandler(w http.ResponseWriter, r *http.Request) {
 	// connection to API
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 	resourceApi := resources.NewClient(httpClient)
-	searchQuery := ""
+
+	// check URL for errors		
+	u, err := url.Parse(r.URL.String())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// get Query params
+	params := u.Query()
+	searchQuery := params.Get("q")
 
 	// check results for errors
 	results, err := resourceApi.GetProperties(searchQuery)
@@ -150,7 +160,17 @@ func getSalesHandler(w http.ResponseWriter, r *http.Request) {
 	// connection to API
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 	resourceApi := resources.NewClient(httpClient)
-	searchQuery := ""
+
+	// check URL for errors		
+	u, err := url.Parse(r.URL.String())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// get Query params
+	params := u.Query()
+	searchQuery := params.Get("q")
 
 	// check results for errors
 	results, err := resourceApi.GetSales(searchQuery)
