@@ -3,6 +3,7 @@
 <div class="content">
   <h2>Agents</h2>
   <div>This is the Agents page</div>
+
   <div>
     <form action="/agents" method="GET">
       <input
@@ -15,20 +16,30 @@
       />
     </form>
   </div>
-  <div>
+
+  <section class="container">
     <ul class="search-results">
       {{ range.AgentResults }}
-      <li class="resources-Agent">
+      <li class="resources">
         <div>
-          <p class="agentId">Agent-ID: {{ .AgentID }}</p>
-          <p class="agentName">Agent-Name: {{ .AgentName }}</p>
-          <p class="agentCommission">Agent-Commission: {{ .AgentCommission }}</p>
+          <p class="description">Agent-ID: {{ .AgentID }}</p>
+          <p class="description">Agent-Name: {{ .AgentName }}</p>
+          <p class="description">Agent-Commission: {{ .AgentCommission }}</p>
           <br>
+          <form action="/deleteAgent" method="DELETE">
+            <button 
+              autofocus
+              value={{ .AgentID }}
+              type="submit"
+              name="agentID" 
+            >Delete Agent</button>
+          </form>
         </div>
       </li>
       {{ end }}
     </ul>
-  </div>
+  </section>
+
 </div>
 {{template "footer" .}}
 {{end}}

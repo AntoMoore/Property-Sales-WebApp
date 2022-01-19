@@ -4,6 +4,18 @@
   <h2>Sales</h2>
   <div>This is the Sales page</div>
   <div>
+    <form action="/agents" method="GET">
+      <input
+        autofocus
+        class="search-input"
+        value=""
+        placeholder="Search by Sale-ID"
+        type="search"
+        name="q"
+      />
+    </form>
+  </div>
+  <div>
     <ul class="search-results">
       {{ range.SaleResults }}
       <li class="resources-Sale">

@@ -103,6 +103,7 @@ func (c *Client) PostAgent(details url.Values) (error) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 
 	// print results
@@ -111,19 +112,51 @@ func (c *Client) PostAgent(details url.Values) (error) {
 	return nil
 }
 
+func (c *Client) DeleteAgent(data string) (error) {
+	var endpoint = "http://localhost:4567/openproperty/agents/remove/?id=" + data
+	
+	// create request
+	req, err := http.NewRequest("DELETE", endpoint, nil)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	// fetch request
+	resp,err := c.http.Do(req)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+
+
+	// close body and check for errors
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	// print results
+	fmt.Printf("%+v", body)
+
+	return nil
+
+}
+
 // get agents from API 
 func (c *Client) GetProperties(query string) (*PropertyResults, error) {
-	var endpoint = "http://localhost:4567/openproperty/properties/"
+	var endpoint string
 
-	/*
 	if query == "" {
-		// no paramaters (get all agents)
-		endpoint = "http://localhost:4567/openproperty/agents/"
+		// no paramaters (get all)
+		endpoint = "http://localhost:4567/openproperty/properties/"
 	} else {
-		// get Agent by given id
-		endpoint = fmt.Sprintf("http://localhost:4567/openproperty/agents/?id=%s", url.QueryEscape(query))
+		// get by given id
+		endpoint = fmt.Sprintf("http://localhost:4567/openproperty/properties/?id=%s", url.QueryEscape(query))
 	}
-	*/
 
 	// response errors
 	resp, err := c.http.Get(endpoint)
@@ -171,17 +204,15 @@ func (c *Client) PostProperty(details url.Values) (error) {
 }
 
 func (c *Client) GetSales(query string) (*SaleResults, error) {
-	var endpoint = "http://localhost:4567/openproperty/sales/"
+	var endpoint string
 
-	/*
 	if query == "" {
-		// no paramaters (get all agents)
-		endpoint = "http://localhost:4567/openproperty/agents/"
+		// no paramaters (get all)
+		endpoint = "http://localhost:4567/openproperty/sales/"
 	} else {
-		// get Agent by given id
-		endpoint = fmt.Sprintf("http://localhost:4567/openproperty/agents/?id=%s", url.QueryEscape(query))
+		// get by given id
+		endpoint = fmt.Sprintf("http://localhost:4567/openproperty/sales/?id=%s", url.QueryEscape(query))
 	}
-	*/
 
 	// response errors
 	resp, err := c.http.Get(endpoint)

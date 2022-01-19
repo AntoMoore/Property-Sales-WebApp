@@ -93,6 +93,36 @@ func postAgentHandler(w http.ResponseWriter, r *http.Request){
 	getAgentsHandler(w,r)
 }
 
+func deleteAgentHandler(w http.ResponseWriter, r *http.Request){
+	// map key-value pairs from the form data
+	//data := url.Values{}
+	//data.Set("id", r.FormValue("agentID"))
+
+	// connection to API
+	httpClient := &http.Client{Timeout: 10 * time.Second}
+	resourceApi := resources.NewClient(httpClient)
+
+	data := r.FormValue("agentID")
+	
+	fmt.Println("Delete Agent: ", r.FormValue("agentID"))
+
+	// call resources
+	err := resourceApi.DeleteAgent(data)
+
+	// error handling
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// display agents
+	getAgentsHandler(w,r)
+
+	
+
+	
+}
+
 func getPropertiesHandler(w http.ResponseWriter, r *http.Request) {
 	// connection to API
 	httpClient := &http.Client{Timeout: 10 * time.Second}
@@ -243,6 +273,7 @@ func main() {
 	mux.HandleFunc("/", mainHandler)
 	mux.HandleFunc("/agents", getAgentsHandler)
 	mux.HandleFunc(("/createAgent"), postAgentHandler)
+	mux.HandleFunc(("/deleteAgent"), deleteAgentHandler)
 	mux.HandleFunc(("/properties"), getPropertiesHandler)
 	mux.HandleFunc(("/createProperty"), postPropertyHandler)
 	mux.HandleFunc(("/sales"), getSalesHandler)
